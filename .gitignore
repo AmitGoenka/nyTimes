@@ -5,8 +5,4 @@
 /build
 /captures
 .externalNativeBuild
-.idea/
 /.idea/
-/.idea/runConfigurations.xml
-/.idea/modules.xml
-/.idea/vcs.xml
