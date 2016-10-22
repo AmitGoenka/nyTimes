@@ -5,4 +5,15 @@
     <string name="search">Search</string>
     <string name="title_activity_article">ArticleActivity</string>
     <string name="search_filter">Search Filter</string>
+    <string name="fashion_style"><![CDATA[Fashion & Style]]></string>
+    <string name="arts">Arts</string>
+    <string name="sports">Sports</string>
+    <string name="news_desk_values">News Desk values</string>
+    <string name="sort_order">Sort Order</string>
+    <string name="begin_date">Begin Date</string>
+    <string name="save">Save</string>
+    <string-array name="sort_order_array">
+        <item>Oldest</item>
+        <item>Newest</item>
+    </string-array>
 </resources>

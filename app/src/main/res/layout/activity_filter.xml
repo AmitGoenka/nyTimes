@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_filter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="org.agoenka.nytimes.activities.FilterActivity">
+
+    <TextView
+        android:id="@+id/tvBeginDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/begin_date"/>
+
+    <EditText
+        android:id="@+id/etBeginDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="65dp"
+        android:layout_marginStart="65dp"
+        android:layout_toEndOf="@id/tvBeginDate"
+        android:layout_toRightOf="@id/tvBeginDate"
+        android:onClick="showDatePickerDialog"/>
+
+    <TextView
+        android:id="@+id/tvSortOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tvBeginDate"
+        android:layout_marginTop="61dp"
+        android:text="@string/sort_order"/>
+
+    <Spinner
+        android:id="@+id/spnSortOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/etBeginDate"
+        android:layout_alignStart="@id/etBeginDate"
+        android:layout_alignTop="@+id/tvSortOrder"
+        android:entries="@array/sort_order_array"/>
+
+    <TextView
+        android:id="@+id/tvNewsDesk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/spnSortOrder"
+        android:layout_marginTop="93dp"
+        android:text="@string/news_desk_values"/>
+
+    <CheckBox
+        android:id="@+id/cbArts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/spnSortOrder"
+        android:layout_alignStart="@id/spnSortOrder"
+        android:layout_alignTop="@+id/tvNewsDesk"
+        android:text="@string/arts"/>
+
+    <CheckBox
+        android:id="@+id/cbFashionStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cbArts"
+        android:layout_alignStart="@+id/cbArts"
+        android:layout_below="@+id/cbArts"
+        android:layout_marginTop="27dp"
+        android:text="@string/fashion_style"/>
+
+    <CheckBox
+        android:id="@+id/cbSports"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cbFashionStyle"
+        android:layout_alignStart="@+id/cbFashionStyle"
+        android:layout_below="@+id/cbFashionStyle"
+        android:layout_marginTop="27dp"
+        android:text="@string/sports"/>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cbSports"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@color/colorPrimary"
+        android:onClick="onSave"
+        android:text="@string/save"/>
+
+</RelativeLayout>

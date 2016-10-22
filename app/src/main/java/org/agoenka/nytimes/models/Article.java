@@ -32,7 +32,7 @@ public class Article implements Serializable {
         return thumbnail;
     }
 
-    public Article(JSONObject jsonObject) {
+    private Article(JSONObject jsonObject) {
         try {
             this.webUrl = jsonObject.getString("web_url");
             this.headline = jsonObject.getJSONObject("headline").getString("main");

@@ -20,6 +20,7 @@ import com.loopj.android.http.RequestParams;
 import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.adapters.ArticleArrayAdapter;
 import org.agoenka.nytimes.models.Article;
+import org.agoenka.nytimes.models.Filter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,11 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
+import static android.text.TextUtils.isEmpty;
+
 public class SearchActivity extends AppCompatActivity {
+
+    public static final int REQUEST_CODE_SELECT_FILTER = 1;
 
     EditText etQuery;
     GridView gvResults;
@@ -37,6 +42,7 @@ public class SearchActivity extends AppCompatActivity {
 
     List<Article> articles;
     ArticleArrayAdapter adapter;
+    Filter filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +93,22 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, FilterActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_SELECT_FILTER);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_SELECT_FILTER) {
+            if (resultCode == RESULT_OK) {
+                filter = (Filter) data.getSerializableExtra("filter");
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onArticleSearch(View view) {
@@ -103,6 +121,17 @@ public class SearchActivity extends AppCompatActivity {
         params.put("api_key", "f96a3e8855874a938fa7c06c0b633b69");
         params.put("page", 0);
         params.put("q", query);
+        if (filter != null) {
+            if (!isEmpty(filter.getBeginDate())) {
+                params.put("begin_date", filter.getBeginDate());
+            }
+            if (!isEmpty(filter.getSortOrder())) {
+                params.put("sort", filter.getSortOrder());
+            }
+            if (!isEmpty(filter.getNewsDesks())) {
+                params.put("news_desk", filter.getNewsDesks());
+            }
+        }
 
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
@@ -112,6 +141,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    adapter.clear();
                     adapter.addAll(Article.fromJSONArray(articleJsonResults));
                     Log.d("DEBUG", articles.toString());
                 } catch (JSONException e) {
@@ -119,6 +149,5 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 }
