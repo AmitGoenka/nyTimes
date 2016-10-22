@@ -8,15 +8,16 @@ Time spent: **7** hours spent in total
 
 The following **required** functionality is completed:
 
-* [x] User can **search for news article** by specifying a query and launching a search. Search displays a grid of image results from the New York Times Search API.
-* [x] User can click on "settings" which allows selection of **advanced search options** to filter results
-* [x] User can configure advanced search filters such as:
+* [x] User can enter a search query that will display a grid of news articles using the thumbnail and headline from the New York Times Search API. (3 points)
+* [x] User can click on "filter" icon which allows selection of advanced search options to filter articles. (3 points)
+  * An example of a query with filters (begin_date, sort, and news_desk) applied can be found here. Full details of the API can be found on this article search README.
+* [x] User can configure advanced search filters such as: (points included above)
   * [x] Begin Date (using a date picker)
-  * [x] News desk values (Arts, Fashion & Style, Sports)
-  * [x] Sort order (oldest or newest)
-* [x] Subsequent searches have any filters applied to the search results
-* [ ] User can tap on any image in results to see the full text of article **full-screen**
-* [ ] User can **scroll down to see more articles**. The maximum number of articles is limited by the API search.
+  * [x] Sort order (oldest or newest) using a spinner dropdown
+  * [x] News desk values (Arts, Fashion & Style, Sports) using checkboxes
+* [x] Subsequent searches will have any filters applied to the search results. (1 point)
+* [x] User can tap on any article in results to view the contents in an embedded browser. (2 points)
+* [x] User can scroll down "infinitely" to continue loading more news articles. The maximum number of articles is limited by the API search. (1 point)
 
 The following **optional** features are implemented:
 
@@ -41,7 +42,7 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [ ] On re-selection of filters in the same session, transferring the user's previous filter selection from the articles search screen to the filter screen so that user does not have do it all over again!
 
 ## Video Walkthrough
 

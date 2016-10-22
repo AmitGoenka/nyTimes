@@ -14,8 +14,12 @@ import com.squareup.picasso.Picasso;
 
 import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.models.Article;
+import org.agoenka.nytimes.utils.PicassoUtils;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Author: agoenka
@@ -24,6 +28,17 @@ import java.util.List;
  */
 
 public class ArticleArrayAdapter extends ArrayAdapter<Article> {
+
+    private Picasso picasso;
+
+    static class ViewHolder {
+        @BindView(R.id.ivThumbnail) ImageView ivThumbnail;
+        @BindView(R.id.ivTitle) TextView ivTitle;
+
+        ViewHolder (View view) {
+            ButterKnife.bind(this, view);
+        }
+    }
 
     public ArticleArrayAdapter(Context context, List<Article> articles) {
         super(context, android.R.layout.simple_list_item_1, articles);
@@ -34,27 +49,30 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // get the data item for position
         Article article = getItem(position);
+        ViewHolder viewHolder;
 
         // check to see if existing view is being reused
         // not using a recycled view -> inflate the layout
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_article_result, parent, false);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        // find the image view
-        ImageView ivThumbnail = (ImageView) convertView.findViewById(R.id.ivThumbnail);
 
         // clear out recycled image from convertView from last time
-        ivThumbnail.setImageResource(0);
-
-        TextView ivTitle = (TextView) convertView.findViewById(R.id.ivTitle);
-        ivTitle.setText(article.getHeadline());
+        viewHolder.ivThumbnail.setImageResource(0);
+        viewHolder.ivTitle.setText(article.getHeadline());
 
         // populate the thumbnail image
         // remote download the image in the background
         String thumbnail = article.getThumbnail();
-
         if (!TextUtils.isEmpty(thumbnail)) {
-            Picasso.with(getContext()).load(thumbnail).into(ivThumbnail);
+            if (picasso == null) picasso = PicassoUtils.newInstance(getContext());
+            picasso.load(thumbnail)
+                    .error(R.mipmap.ic_launcher)
+                    .into(viewHolder.ivThumbnail);
         }
 
         return convertView;

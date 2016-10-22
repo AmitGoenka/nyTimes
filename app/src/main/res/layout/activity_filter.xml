@@ -28,8 +28,7 @@
         android:layout_marginLeft="65dp"
         android:layout_marginStart="65dp"
         android:layout_toEndOf="@id/tvBeginDate"
-        android:layout_toRightOf="@id/tvBeginDate"
-        android:onClick="showDatePickerDialog"/>
+        android:layout_toRightOf="@id/tvBeginDate"/>
 
     <TextView
         android:id="@+id/tvSortOrder"
@@ -97,7 +96,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:background="@color/colorPrimary"
-        android:onClick="onSave"
         android:text="@string/save"/>
 
 </RelativeLayout>

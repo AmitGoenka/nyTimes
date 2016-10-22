@@ -9,11 +9,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
-    <!--<item
+    <item
         android:id="@+id/action_filter"
         android:orderInCategory="50"
         android:title="@string/search_filter"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_filter_variant_white_24dp"/>-->
+        android:icon="@drawable/ic_filter_variant_white_24dp"/>
 
 </menu>

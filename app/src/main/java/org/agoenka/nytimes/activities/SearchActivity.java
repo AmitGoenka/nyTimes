@@ -8,19 +8,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.adapters.ArticleArrayAdapter;
+import org.agoenka.nytimes.adapters.EndlessScrollListener;
 import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.models.Filter;
+import org.agoenka.nytimes.network.ArticleSearchAPIClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,17 +28,22 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 import cz.msebera.android.httpclient.Header;
 
-import static android.text.TextUtils.isEmpty;
+import static org.agoenka.nytimes.network.NetworkUtils.isNetworkAvailable;
 
 public class SearchActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE_SELECT_FILTER = 1;
 
-    EditText etQuery;
-    GridView gvResults;
-    Button btnSearch;
+    @BindView(R.id.etQuery) EditText etQuery;
+    @BindView(R.id.gvResults) GridView gvResults;
+    @BindView(R.id.btnSearch) Button btnSearch;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     List<Article> articles;
     ArticleArrayAdapter adapter;
@@ -48,33 +53,39 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
         setupViews();
     }
 
     private void setupViews () {
-        etQuery = (EditText) findViewById(R.id.etQuery);
-        gvResults = (GridView) findViewById(R.id.gvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
 
-        // register listener for grid on click
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Attach the On Scroll Listener to the AdapterView
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // create an intent to display the article
-                Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
-                // get the article to display
-                Article article = articles.get(position);
-                // pass in that article into the intent
-                intent.putExtra("article", article);
-                // launch the activity
-                startActivity(intent);
+            public boolean onLoadMore(int page, int totalItemCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Append new items to the AdapterView
+                return loadMoreArticles(page);
             }
         });
+    }
+
+    // register listener for grid on click
+    @OnItemClick(R.id.gvResults)
+    public void OnClickArticle (int position) {
+        // create an intent to display the article
+        Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
+        // get the article to display
+        Article article = articles.get(position);
+        // pass in that article into the intent
+        intent.putExtra("article", article);
+        // launch the activity
+        startActivity(intent);
     }
 
     @Override
@@ -92,8 +103,9 @@ public class SearchActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_filter) {
             Intent intent = new Intent(this, FilterActivity.class);
+            if (filter != null) intent.putExtra("filter", filter);
             startActivityForResult(intent, REQUEST_CODE_SELECT_FILTER);
             return true;
         }
@@ -111,43 +123,66 @@ public class SearchActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void onArticleSearch(View view) {
+    @OnClick(R.id.btnSearch)
+    public void onSearchArticle(View view) {
+        String query = etQuery.getText().toString();
+        int page = 0;
+
+        if (!isNetworkAvailable(SearchActivity.this)) {
+            Toast.makeText(this, "Internet connectivity is not available. Please check your internet connection.", Toast.LENGTH_SHORT).show();
+        } else {
+            new ArticleSearchAPIClient().getArticles(query, filter, page, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    JSONArray articleJsonResults;
+                    try {
+                        articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                        adapter.clear();
+                        adapter.notifyDataSetChanged();
+                        adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                        Log.d("DEBUG", articles.toString());
+                    } catch (JSONException e) {
+                        Log.d("DEBUG", e.getMessage());
+                        Toast.makeText(SearchActivity.this, "Error occurred while parsing the search response!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
+                    Log.d("DEBUG", throwable.getMessage());
+                    Toast.makeText(SearchActivity.this, "Error occurred while retrieving the articles.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    // Append more data into the adapter
+    public boolean loadMoreArticles(int offset) {
+        // This method sends out a network request and appends new data items to your adapter.
+        // The offset value ise used as a parameter to the API request to retrieve paginated data.
+        // Deserialize API response and then construct new objects to append to the adapter
         String query = etQuery.getText().toString();
 
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-
-        RequestParams params = new RequestParams();
-        params.put("api_key", "f96a3e8855874a938fa7c06c0b633b69");
-        params.put("page", 0);
-        params.put("q", query);
-        if (filter != null) {
-            if (!isEmpty(filter.getBeginDate())) {
-                params.put("begin_date", filter.getBeginDate());
-            }
-            if (!isEmpty(filter.getSortOrder())) {
-                params.put("sort", filter.getSortOrder());
-            }
-            if (!isEmpty(filter.getNewsDesks())) {
-                params.put("news_desk", filter.getNewsDesks());
-            }
-        }
-
-        client.get(url, params, new JsonHttpResponseHandler() {
+        new ArticleSearchAPIClient().getArticles(query, filter, offset, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("DEBUG", response.toString());
                 JSONArray articleJsonResults;
-
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.clear();
                     adapter.addAll(Article.fromJSONArray(articleJsonResults));
                     Log.d("DEBUG", articles.toString());
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.d("DEBUG", e.getMessage());
                 }
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
+                Log.d("DEBUG", throwable.getMessage());
+                Toast.makeText(SearchActivity.this, "Error occurred while retrieving more articles.", Toast.LENGTH_SHORT).show();
+            }
         });
+
+        return true; // ONLY if more data is actually being loaded; false otherwise.
     }
 }

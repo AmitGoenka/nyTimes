@@ -30,6 +30,12 @@ public class DateUtils {
         return c;
     }
 
+    public static Calendar getCalendar(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c;
+    }
+
     public static Date getDate(String dateString, String format) {
         try {
             SimpleDateFormat sdfSource = new SimpleDateFormat(format, Locale.getDefault());
