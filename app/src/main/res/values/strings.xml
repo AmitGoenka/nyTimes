@@ -4,4 +4,5 @@
     <string name="hintSearchQuery">Enter search query</string>
     <string name="search">Search</string>
     <string name="title_activity_article">ArticleActivity</string>
+    <string name="search_filter">Search Filter</string>
 </resources>
