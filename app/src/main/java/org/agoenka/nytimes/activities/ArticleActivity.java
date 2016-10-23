@@ -6,6 +6,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebResourceRequest;
@@ -38,6 +39,7 @@ public class ArticleActivity extends AppCompatActivity {
             }
         });
         webView.loadUrl(article.getWebUrl());
+        Log.d("DEBUG", "Article Info: Headline: " + article.getHeadline() + ", Thumbnail: " + article.getThumbnail() + ", Url: " + article.getWebUrl());
     }
 
     @Override

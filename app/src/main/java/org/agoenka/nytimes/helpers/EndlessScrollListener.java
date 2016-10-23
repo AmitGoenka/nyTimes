@@ -1,4 +1,4 @@
-package org.agoenka.nytimes.adapters;
+package org.agoenka.nytimes.helpers;
 
 import android.widget.AbsListView;
 
@@ -7,6 +7,7 @@ import android.widget.AbsListView;
  * Created At: 10/22/2016
  * Version: ${VERSION}
  */
+@SuppressWarnings("unused")
 public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
     // Minimum number of items to have below current scroll position before loading more.
     private int visibleThreshold = 5;
@@ -16,17 +17,15 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
     private int startingPageIndex = 0;
     // Total number of items in the dataset after the last load
     private int previousTotalItemCount = 0;
-    // True if we are still waiting for the last dataet to load.
+    // True if we are still waiting for the last dataset to load.
     private boolean loading = true;
 
     protected EndlessScrollListener() {}
 
-    @SuppressWarnings("unused")
     protected EndlessScrollListener(int visibleThreshold) {
         this.visibleThreshold = visibleThreshold;
     }
 
-    @SuppressWarnings("unused")
     protected EndlessScrollListener(int visibleThreshold, int startPage) {
         this.visibleThreshold = visibleThreshold;
         this.startingPageIndex = startPage;
@@ -65,7 +64,7 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
 
     // Defines the process for actually loading more data based on page
     // Returns true if more data is being loaded; returns false if there is no more data to load.
-    public abstract boolean onLoadMore(int page, int totalItemCount);
+    abstract boolean onLoadMore(int page, int totalItemCount);
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {

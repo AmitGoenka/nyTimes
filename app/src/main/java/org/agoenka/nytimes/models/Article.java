@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Author: agoenka
@@ -37,9 +38,9 @@ public class Article implements Serializable {
             this.webUrl = jsonObject.getString("web_url");
             this.headline = jsonObject.getJSONObject("headline").getString("main");
             JSONArray multimedia = jsonObject.getJSONArray("multimedia");
-
             if (multimedia.length() > 0) {
-                JSONObject multimediaJson = multimedia.getJSONObject(0);
+                int selectedImage = new Random().nextInt(multimedia.length());
+                JSONObject multimediaJson = multimedia.getJSONObject(selectedImage);
                 this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
             } else {
                 this.thumbnail = "";
