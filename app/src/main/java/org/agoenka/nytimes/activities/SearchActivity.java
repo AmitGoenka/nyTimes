@@ -38,8 +38,6 @@ import static org.agoenka.nytimes.network.NetworkUtils.isConnected;
 
 public class SearchActivity extends AppCompatActivity {
 
-    /*public static final int REQUEST_CODE_SELECT_FILTER = 1;*/
-
     @BindView(R.id.gvResults) GridView gvResults;
     @BindView(R.id.toolbar) Toolbar toolbar;
     SearchView searchView;
@@ -124,9 +122,6 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_filter) {
-            /*Intent intent = new Intent(this, FilterActivity.class);
-            if (filter != null) intent.putExtra("filter", filter);
-            startActivityForResult(intent, REQUEST_CODE_SELECT_FILTER);*/
             FilterSettingsFragment filterDialog = FilterSettingsFragment.newInstance("Filters", filter);
             filterDialog.setFilterSettingsDialogListener(new FilterSettingsFragment.FilterSettingsDialogListener() {
                 @Override
@@ -141,16 +136,6 @@ public class SearchActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_SELECT_FILTER) {
-            if (resultCode == RESULT_OK) {
-                filter = (Filter) data.getSerializableExtra("filter");
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }*/
 
     private void fetchArticles() {
         if (isConnected(this)) {
