@@ -28,6 +28,7 @@ import org.agoenka.nytimes.network.ArticleSearchAPIClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,12 +93,12 @@ public class SearchActivity extends AppCompatActivity {
                 new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        // create an intent to display the article
-                        Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
                         // get the article to display
                         Article article = articles.get(position);
+                        // create an intent to display the article
+                        Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
                         // pass in that article into the intent
-                        intent.putExtra("article", article);
+                        intent.putExtra("article", Parcels.wrap(article));
                         // launch the activity
                         startActivity(intent);
                     }

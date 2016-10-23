@@ -3,8 +3,8 @@ package org.agoenka.nytimes.models;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,11 +15,12 @@ import java.util.Random;
  * Version: ${VERSION}
  */
 
-public class Article implements Serializable {
+@Parcel
+public class Article {
 
-    private String webUrl;
-    private String headline;
-    private String thumbnail;
+    String webUrl;
+    String headline;
+    String thumbnail;
 
     public String getWebUrl() {
         return webUrl;
@@ -32,6 +33,8 @@ public class Article implements Serializable {
     public String getThumbnail() {
         return thumbnail;
     }
+
+    public Article() {}
 
     private Article(JSONObject jsonObject) {
         try {

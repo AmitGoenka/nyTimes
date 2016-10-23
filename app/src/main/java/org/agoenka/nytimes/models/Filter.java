@@ -5,8 +5,8 @@ import android.text.TextUtils;
 import android.widget.CheckBox;
 
 import org.agoenka.nytimes.R;
+import org.parceler.Parcel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,11 +22,14 @@ import static org.agoenka.nytimes.utils.DateUtils.getDate;
  * Version: ${VERSION}
  */
 
-public class Filter implements Serializable {
+@Parcel
+public class Filter {
 
-    private Date beginDate;
-    private String sortOrder;
-    private List<String> newsDesks;
+    Date beginDate;
+    String sortOrder;
+    List<String> newsDesks;
+
+    public Filter() {}
 
     public Filter(String beginDate, String sortOrder, List<String> newsDesks) {
         this.beginDate = TextUtils.isEmpty(beginDate) ? null : getDate(beginDate, FORMAT_MMDDYY);

@@ -17,6 +17,7 @@ import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.models.Filter;
 import org.agoenka.nytimes.utils.AppUtils;
 import org.agoenka.nytimes.utils.DateUtils;
+import org.parceler.Parcels;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -66,7 +67,7 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
         FilterSettingsFragment fragment = new FilterSettingsFragment();
         Bundle args = new Bundle();
         args.putString(KEY_TITLE, title);
-        if (filter != null) args.putSerializable(KEY_FILTER, filter);
+        if (filter != null) args.putParcelable(KEY_FILTER, Parcels.wrap(filter));
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,8 +87,8 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
         final String title = getArguments().getString(KEY_TITLE);
         getDialog().setTitle(title);
 
-        if (getArguments().getSerializable(KEY_FILTER) != null) {
-            filter = (Filter) getArguments().getSerializable(KEY_FILTER);
+        if (getArguments().getParcelable(KEY_FILTER) != null) {
+            filter = Parcels.unwrap(getArguments().getParcelable(KEY_FILTER));
             assert filter != null;
 
             Date beginDate = filter.getBeginDate();
