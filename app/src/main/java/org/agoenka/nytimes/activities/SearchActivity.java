@@ -2,6 +2,7 @@ package org.agoenka.nytimes.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -17,6 +18,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.adapters.ArticleArrayAdapter;
 import org.agoenka.nytimes.adapters.EndlessScrollListener;
+import org.agoenka.nytimes.fragments.FilterSettingsFragment;
 import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.models.Filter;
 import org.agoenka.nytimes.network.ArticleSearchAPIClient;
@@ -36,7 +38,7 @@ import static org.agoenka.nytimes.network.NetworkUtils.isConnected;
 
 public class SearchActivity extends AppCompatActivity {
 
-    public static final int REQUEST_CODE_SELECT_FILTER = 1;
+    /*public static final int REQUEST_CODE_SELECT_FILTER = 1;*/
 
     @BindView(R.id.gvResults) GridView gvResults;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -122,16 +124,25 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_filter) {
-            Intent intent = new Intent(this, FilterActivity.class);
+            /*Intent intent = new Intent(this, FilterActivity.class);
             if (filter != null) intent.putExtra("filter", filter);
-            startActivityForResult(intent, REQUEST_CODE_SELECT_FILTER);
+            startActivityForResult(intent, REQUEST_CODE_SELECT_FILTER);*/
+            FilterSettingsFragment filterDialog = FilterSettingsFragment.newInstance("Filters", filter);
+            filterDialog.setFilterSettingsDialogListener(new FilterSettingsFragment.FilterSettingsDialogListener() {
+                @Override
+                public void onSave(Filter selectedFiler) {
+                    filter = selectedFiler;
+                }
+            });
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            filterDialog.show(fragmentManager, "Filter Settings");
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_SELECT_FILTER) {
             if (resultCode == RESULT_OK) {
@@ -139,7 +150,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
+    }*/
 
     private void fetchArticles() {
         if (isConnected(this)) {
