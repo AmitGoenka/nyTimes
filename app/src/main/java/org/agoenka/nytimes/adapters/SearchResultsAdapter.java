@@ -31,13 +31,15 @@ import butterknife.ButterKnife;
  */
 // This is a basic adapter extending from RecyclerView.Adapter
 // Note that the custom ViewHolder is specified which gives access to the views
-public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.ViewHolder> {
+public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // Store a member variable for the articles
     private List<Article> mArticles;
     // Store the context for easy access
     private Context mContext;
     private Picasso picasso;
+    // Identifiers to classify te view type
+    private final int STANDARD = 0, TEXTONLY = 1;
 
     // Pass in the articles list into the constructor
     public SearchResultsAdapter(Context context, List<Article> articles) {
@@ -50,16 +52,90 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         return mContext;
     }
 
+    // Returns the total count of items in the list
+    @Override
+    public int getItemCount() {
+        return mArticles.size();
+    }
+
+    //Returns the view type of the item at position for the purposes of view recycling.
+    @Override
+    public int getItemViewType(int position) {
+        if (!TextUtils.isEmpty(mArticles.get(position).getThumbnail()))
+            return STANDARD;
+        else
+            return TEXTONLY;
+    }
+
+    // Usually involves inflating a layout from XML and returning the holder
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view;
+        RecyclerView.ViewHolder holder = null;
+
+        switch (viewType) {
+            case STANDARD:
+                view = inflater.inflate(R.layout.item_article_result, parent, false);
+                holder = new StandardViewHolder(view);
+                break;
+            case TEXTONLY:
+                view = inflater.inflate(R.layout.item_article_noimage, parent, false);
+                holder = new TextOnlyViewHolder(view);
+                break;
+        }
+
+        // Return a new holder instance
+        return holder;
+    }
+
+    // Involves populating data into the item through holder
+    // Set item views based on views and data model
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        // get the data item for position
+        Article article = mArticles.get(position);
+
+        switch (holder.getItemViewType()) {
+            case STANDARD:
+                StandardViewHolder standardViewHolder = (StandardViewHolder) holder;
+                configureStandardViewHolder(standardViewHolder, article);
+                break;
+            case TEXTONLY:
+                TextOnlyViewHolder textOnlyViewHolder = (TextOnlyViewHolder) holder;
+                configureTextOnlyViewHolder(textOnlyViewHolder, article);
+                break;
+        }
+    }
+
+    private void configureStandardViewHolder(StandardViewHolder holder, Article article) {
+        holder.ivTitle.setText(article.getHeadline());
+        // clear out recycled image from last time
+        holder.ivThumbnail.setImageResource(0);
+
+        if (picasso == null) picasso = PicassoUtils.newInstance(getContext());
+
+        // populate the thumbnail image
+        // remote download the image in the background
+        picasso.load(article.getThumbnail())
+                .error(R.mipmap.ic_launcher)
+                .into(holder);
+    }
+
+    private void configureTextOnlyViewHolder(TextOnlyViewHolder holder, Article article) {
+        holder.ivTitle.setText(article.getHeadline());
+    }
+
     // A direct reference is provided to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    static class ViewHolder extends RecyclerView.ViewHolder implements Target{
+    static class StandardViewHolder extends RecyclerView.ViewHolder implements Target {
         // Holder should contain member variables for any view that will be set as a row is rendered
         @BindView(R.id.ivThumbnail) DynamicHeightImageView ivThumbnail;
         @BindView(R.id.ivTitle) TextView ivTitle;
 
         // A constructor is also created that accepts the entire item row
         // and does the view lookups to find each subview
-        ViewHolder(View itemView) {
+        StandardViewHolder(View itemView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
@@ -88,41 +164,12 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         }
     }
 
-    // Usually involves inflating a layout from XML and returning the holder
-    @Override
-    public SearchResultsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Inflate the custom layout
-        View articleView = LayoutInflater.from(getContext()).inflate(R.layout.item_article_result, parent, false);
+    static class TextOnlyViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.ivTitle) TextView ivTitle;
 
-        // Return a new holder instance
-        return new ViewHolder(articleView);
-    }
-
-    // Involves populating data into the item through holder
-    // Set item views based on views and data model
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        // get the data item for position
-        Article article = mArticles.get(position);
-
-        // clear out recycled image from last time
-        holder.ivThumbnail.setImageResource(0);
-        holder.ivTitle.setText(article.getHeadline());
-
-        // populate the thumbnail image
-        // remote download the image in the background
-        String thumbnail = article.getThumbnail();
-        if (!TextUtils.isEmpty(thumbnail)) {
-            if (picasso == null) picasso = PicassoUtils.newInstance(getContext());
-            picasso.load(thumbnail)
-                    .error(R.mipmap.ic_launcher)
-                    .into(holder);
+        TextOnlyViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
-    }
-
-    // Returns the total count of items in the list
-    @Override
-    public int getItemCount() {
-        return mArticles.size();
     }
 }
