@@ -4,16 +4,24 @@
       tools:context="org.agoenka.nytimes.activities.SearchActivity">
 
     <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter_variant_white_24dp"
+        android:orderInCategory="5"
+        android:title="@string/filters"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="6"
+        android:title="@string/search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"/>
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_filter"
-        android:orderInCategory="50"
-        android:title="@string/search_filter"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_filter_variant_white_24dp"/>
 
 </menu>

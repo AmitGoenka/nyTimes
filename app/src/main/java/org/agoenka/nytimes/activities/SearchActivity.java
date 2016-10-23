@@ -2,14 +2,13 @@ package org.agoenka.nytimes.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -30,7 +29,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnItemClick;
 import cz.msebera.android.httpclient.Header;
 
@@ -40,14 +38,14 @@ public class SearchActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE_SELECT_FILTER = 1;
 
-    @BindView(R.id.etQuery) EditText etQuery;
     @BindView(R.id.gvResults) GridView gvResults;
-    @BindView(R.id.btnSearch) Button btnSearch;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    SearchView searchView;
 
     List<Article> articles;
     ArticleArrayAdapter adapter;
     Filter filter;
+    String searchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +57,14 @@ public class SearchActivity extends AppCompatActivity {
         setupViews();
     }
 
-    private void setupViews () {
+    private void setupViews() {
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
+        setupScrollListener();
+    }
 
+    private void setupScrollListener() {
         // Attach the On Scroll Listener to the AdapterView
         gvResults.setOnScrollListener(new EndlessScrollListener() {
             @Override
@@ -77,7 +78,7 @@ public class SearchActivity extends AppCompatActivity {
 
     // register listener for grid on click
     @OnItemClick(R.id.gvResults)
-    public void OnClickArticle (int position) {
+    public void OnClickArticle(int position) {
         // create an intent to display the article
         Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
         // get the article to display
@@ -92,7 +93,24 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
+        final MenuItem menuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                setupScrollListener();
+                fetchArticles();
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -123,13 +141,9 @@ public class SearchActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @OnClick(R.id.btnSearch)
-    public void onSearchArticle(View view) {
-        String query = etQuery.getText().toString();
-        int page = 0;
-
+    private void fetchArticles() {
         if (isConnected(this)) {
-            new ArticleSearchAPIClient().getArticles(query, filter, page, new JsonHttpResponseHandler() {
+            new ArticleSearchAPIClient().getArticles(searchQuery, filter, 0, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     JSONArray articleJsonResults;
@@ -160,10 +174,8 @@ public class SearchActivity extends AppCompatActivity {
         // This method sends out a network request and appends new data items to your adapter.
         // The offset value ise used as a parameter to the API request to retrieve paginated data.
         // Deserialize API response and then construct new objects to append to the adapter
-        String query = etQuery.getText().toString();
-
         if (isConnected(this)) {
-            new ArticleSearchAPIClient().getArticles(query, filter, offset, new JsonHttpResponseHandler() {
+            new ArticleSearchAPIClient().getArticles(searchQuery, filter, offset, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     JSONArray articleJsonResults;
