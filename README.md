@@ -21,7 +21,7 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-* [ ] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
+* [x] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
 * [ ] Used the **ActionBar SearchView** or custom layout as the query box instead of an EditText
 * [ ] User can **share an article link** to their friends or email it to themselves
 * [ ] Replaced Filter Settings Activity with a lightweight modal overlay
@@ -42,7 +42,8 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] On re-selection of filters in the same session, transferring the user's previous filter selection from the articles search screen to the filter screen so that user does not have do it all over again!
+* [x] On re-selection of filters in the same session, transferring the user's previous filter selection from the articles search screen to the filter screen so that user does not have do it all over again!
+* [x] Fixed some weird date handling into and from the date picker fragment!
 
 ## Video Walkthrough
 

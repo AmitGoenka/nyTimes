@@ -1,6 +1,7 @@
 package org.agoenka.nytimes.models;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.CheckBox;
 
 import org.agoenka.nytimes.R;
@@ -28,7 +29,7 @@ public class Filter implements Serializable {
     private List<String> newsDesks;
 
     public Filter(String beginDate, String sortOrder, List<String> newsDesks) {
-        this.beginDate = getDate(beginDate, FORMAT_MMDDYY);
+        this.beginDate = TextUtils.isEmpty(beginDate) ? null : getDate(beginDate, FORMAT_MMDDYY);
         this.sortOrder = sortOrder;
         this.newsDesks = newsDesks;
     }

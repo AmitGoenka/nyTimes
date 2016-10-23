@@ -34,7 +34,7 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import cz.msebera.android.httpclient.Header;
 
-import static org.agoenka.nytimes.network.NetworkUtils.isNetworkAvailable;
+import static org.agoenka.nytimes.network.NetworkUtils.isConnected;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -128,9 +128,7 @@ public class SearchActivity extends AppCompatActivity {
         String query = etQuery.getText().toString();
         int page = 0;
 
-        if (!isNetworkAvailable(SearchActivity.this)) {
-            Toast.makeText(this, "Internet connectivity is not available. Please check your internet connection.", Toast.LENGTH_SHORT).show();
-        } else {
+        if (isConnected(this)) {
             new ArticleSearchAPIClient().getArticles(query, filter, page, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -143,13 +141,14 @@ public class SearchActivity extends AppCompatActivity {
                         Log.d("DEBUG", articles.toString());
                     } catch (JSONException e) {
                         Log.d("DEBUG", e.getMessage());
-                        Toast.makeText(SearchActivity.this, "Error occurred while parsing the search response!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SearchActivity.this, "Error occurred while parsing the search responses!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
                     Log.d("DEBUG", throwable.getMessage());
+                    Log.d("DEBUG", "StatusCode: " + statusCode + ", Error Message: " + jsonObject);
                     Toast.makeText(SearchActivity.this, "Error occurred while retrieving the articles.", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -163,26 +162,31 @@ public class SearchActivity extends AppCompatActivity {
         // Deserialize API response and then construct new objects to append to the adapter
         String query = etQuery.getText().toString();
 
-        new ArticleSearchAPIClient().getArticles(query, filter, offset, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                JSONArray articleJsonResults;
-                try {
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                    Log.d("DEBUG", articles.toString());
-                } catch (JSONException e) {
-                    Log.d("DEBUG", e.getMessage());
+        if (isConnected(this)) {
+            new ArticleSearchAPIClient().getArticles(query, filter, offset, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    JSONArray articleJsonResults;
+                    try {
+                        articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                        adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                        Log.d("DEBUG", articles.toString());
+                    } catch (JSONException e) {
+                        Log.d("DEBUG", e.getMessage());
+                        Toast.makeText(SearchActivity.this, "Error occurred while parsing the search responses!", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
-                Log.d("DEBUG", throwable.getMessage());
-                Toast.makeText(SearchActivity.this, "Error occurred while retrieving more articles.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
+                    Log.d("DEBUG", throwable.getMessage());
+                    Log.d("DEBUG", "StatusCode: " + statusCode + ", Error Message: " + jsonObject);
+                    Toast.makeText(SearchActivity.this, "Error occurred while retrieving more articles.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            return false;
+        }
         return true; // ONLY if more data is actually being loaded; false otherwise.
     }
 }
