@@ -12,6 +12,7 @@
     <string name="sort_order">Sort Order</string>
     <string name="begin_date">Begin Date</string>
     <string name="save">Save</string>
+    <string name="share">Share</string>
     <string-array name="sort_order_array">
         <item>Oldest</item>
         <item>Newest</item>
