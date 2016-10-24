@@ -9,20 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import org.agoenka.nytimes.R;
-import org.agoenka.nytimes.helpers.DynamicHeightImageView;
+import org.agoenka.nytimes.databinding.ItemArticleNoimageBinding;
+import org.agoenka.nytimes.databinding.ItemArticleResultBinding;
 import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.utils.PicassoUtils;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Author: agoenka
@@ -99,19 +96,21 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
         switch (holder.getItemViewType()) {
             case STANDARD:
                 StandardViewHolder standardViewHolder = (StandardViewHolder) holder;
+                standardViewHolder.binding.setArticle(article);
+                standardViewHolder.binding.executePendingBindings();
                 configureStandardViewHolder(standardViewHolder, article);
                 break;
             case TEXTONLY:
                 TextOnlyViewHolder textOnlyViewHolder = (TextOnlyViewHolder) holder;
-                configureTextOnlyViewHolder(textOnlyViewHolder, article);
+                textOnlyViewHolder.binding.setArticle(article);
+                textOnlyViewHolder.binding.executePendingBindings();
                 break;
         }
     }
 
     private void configureStandardViewHolder(StandardViewHolder holder, Article article) {
-        holder.ivTitle.setText(article.getHeadline());
         // clear out recycled image from last time
-        holder.ivThumbnail.setImageResource(0);
+        holder.binding.ivThumbnail.setImageResource(0);
 
         if (picasso == null) picasso = PicassoUtils.newInstance(getContext());
 
@@ -122,16 +121,11 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .into(holder);
     }
 
-    private void configureTextOnlyViewHolder(TextOnlyViewHolder holder, Article article) {
-        holder.ivTitle.setText(article.getHeadline());
-    }
-
     // A direct reference is provided to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     static class StandardViewHolder extends RecyclerView.ViewHolder implements Target {
-        // Holder should contain member variables for any view that will be set as a row is rendered
-        @BindView(R.id.ivThumbnail) DynamicHeightImageView ivThumbnail;
-        @BindView(R.id.ivTitle) TextView ivTitle;
+        // this will be used by onBindViewHolder()
+        final ItemArticleResultBinding binding;
 
         // A constructor is also created that accepts the entire item row
         // and does the view lookups to find each subview
@@ -139,7 +133,9 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            // Since the layout was already inflated within onCreateViewHolder(),
+            // we can use this bind() method to associate the layout variables with the layout.
+            binding = ItemArticleResultBinding.bind(itemView);
         }
 
         @Override
@@ -148,9 +144,9 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
             float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
             Log.d("DEBUG", "Width: " + bitmap.getWidth() + ", Height: " + bitmap.getHeight());
             // Set the ratio for the image
-            ivThumbnail.setHeightRatio(ratio);
+            binding.ivThumbnail.setHeightRatio(ratio);
             // Load the image into the view
-            ivThumbnail.setImageBitmap(bitmap);
+            binding.ivThumbnail.setImageBitmap(bitmap);
         }
 
         @Override
@@ -165,11 +161,12 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     static class TextOnlyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.ivTitle) TextView ivTitle;
+
+        final ItemArticleNoimageBinding binding;
 
         TextOnlyViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ItemArticleNoimageBinding.bind(itemView);
         }
     }
 }

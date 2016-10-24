@@ -1,6 +1,7 @@
 package org.agoenka.nytimes.activities;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -8,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,10 +18,11 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.agoenka.nytimes.R;
+import org.agoenka.nytimes.adapters.SearchResultsAdapter;
+import org.agoenka.nytimes.databinding.ActivitySearchBinding;
+import org.agoenka.nytimes.fragments.FilterSettingsFragment;
 import org.agoenka.nytimes.helpers.EndlessRecyclerViewScrollListener;
 import org.agoenka.nytimes.helpers.ItemClickSupport;
-import org.agoenka.nytimes.adapters.SearchResultsAdapter;
-import org.agoenka.nytimes.fragments.FilterSettingsFragment;
 import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.models.Filter;
 import org.agoenka.nytimes.network.ArticleSearchAPIClient;
@@ -33,17 +34,15 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 import static org.agoenka.nytimes.network.NetworkUtils.isConnected;
 
 public class SearchActivity extends AppCompatActivity {
 
-    @BindView(R.id.rvResults) RecyclerView rvResults;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    RecyclerView rvResults;
     SearchView searchView;
+    private ActivitySearchBinding binding;
 
     List<Article> articles;
     SearchResultsAdapter adapter;
@@ -55,10 +54,9 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        ButterKnife.bind(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
+        setSupportActionBar(binding.toolbar);
 
-        setSupportActionBar(toolbar);
         configureRecyclerView();
 
         searchQuery = "celebrities";
@@ -66,6 +64,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void configureRecyclerView() {
+        rvResults = binding.search.rvResults;
         articles = new ArrayList<>();
         adapter = new SearchResultsAdapter(this, articles);
         // Attach the adapter to the recyclerview to populate items

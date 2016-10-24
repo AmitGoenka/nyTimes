@@ -1,11 +1,11 @@
 package org.agoenka.nytimes.activities;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,23 +14,21 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import org.agoenka.nytimes.R;
+import org.agoenka.nytimes.databinding.ActivityArticleBinding;
 import org.agoenka.nytimes.models.Article;
 import org.parceler.Parcels;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ArticleActivity extends AppCompatActivity {
 
-    @BindView(R.id.wvArticle) WebView webView;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
+        ActivityArticleBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_article);
+        setSupportActionBar(binding.toolbar);
+
+        webView = binding.article.wvArticle;
 
         Article article = Parcels.unwrap(getIntent().getParcelableExtra("article"));
         webView.setWebViewClient(new WebViewClient() {
