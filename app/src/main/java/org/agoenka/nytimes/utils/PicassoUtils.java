@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
  * Version: ${VERSION}
  */
 
+@SuppressWarnings("unused")
 public class PicassoUtils {
 
     private PicassoUtils () {}

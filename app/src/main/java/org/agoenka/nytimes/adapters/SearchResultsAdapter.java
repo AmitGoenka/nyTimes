@@ -1,8 +1,6 @@
 package org.agoenka.nytimes.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,14 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ViewTarget;
 
 import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.databinding.ItemArticleNoimageBinding;
 import org.agoenka.nytimes.databinding.ItemArticleResultBinding;
+import org.agoenka.nytimes.helpers.DynamicHeightImageView;
 import org.agoenka.nytimes.models.Article;
-import org.agoenka.nytimes.utils.PicassoUtils;
 
 import java.util.List;
 
@@ -34,7 +34,6 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
     private List<Article> mArticles;
     // Store the context for easy access
     private Context mContext;
-    private Picasso picasso;
     // Identifiers to classify te view type
     private final int STANDARD = 0, TEXTONLY = 1;
 
@@ -112,20 +111,22 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
         // clear out recycled image from last time
         holder.binding.ivThumbnail.setImageResource(0);
 
-        if (picasso == null) picasso = PicassoUtils.newInstance(getContext());
-
         // populate the thumbnail image
         // remote download the image in the background
-        picasso.load(article.getThumbnail())
+        Glide.with(getContext())
+                .load(article.getThumbnail())
                 .error(R.mipmap.ic_launcher)
-                .into(holder);
+                .into(holder.binding.ivThumbnail);
     }
 
     // A direct reference is provided to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    static class StandardViewHolder extends RecyclerView.ViewHolder implements Target {
+    static class StandardViewHolder extends RecyclerView.ViewHolder {
+
         // this will be used by onBindViewHolder()
         final ItemArticleResultBinding binding;
+
+        ViewTarget<DynamicHeightImageView, GlideDrawable> viewTarget;
 
         // A constructor is also created that accepts the entire item row
         // and does the view lookups to find each subview
@@ -136,27 +137,23 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
             // Since the layout was already inflated within onCreateViewHolder(),
             // we can use this bind() method to associate the layout variables with the layout.
             binding = ItemArticleResultBinding.bind(itemView);
+
+            initializeViewTarget(binding.ivThumbnail);
         }
 
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            // Calculate the image ratio of the loaded bitmap
-            float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
-            Log.d("DEBUG", "Width: " + bitmap.getWidth() + ", Height: " + bitmap.getHeight());
-            // Set the ratio for the image
-            binding.ivThumbnail.setHeightRatio(ratio);
-            // Load the image into the view
-            binding.ivThumbnail.setImageBitmap(bitmap);
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-            Log.d("DEBUG", "In onBitmapFailed");
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-            Log.d("DEBUG", "In onPrepareLoad");
+        void initializeViewTarget(DynamicHeightImageView view) {
+            viewTarget = new ViewTarget<DynamicHeightImageView, GlideDrawable>(view) {
+                @Override
+                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                    // Calculate the image ratio of the loaded bitmap
+                    float ratio = (float) resource.getBounds().height() / (float) resource.getBounds().width();
+                    Log.d("DEBUG", "Width: " + resource.getBounds().width() + ", Height: " + resource.getBounds().height());
+                    // Set the ratio for the image
+                    binding.ivThumbnail.setHeightRatio(ratio);
+                    // Load the image into the view
+                    binding.ivThumbnail.setImageDrawable(resource.getCurrent());
+                }
+            };
         }
     }
 

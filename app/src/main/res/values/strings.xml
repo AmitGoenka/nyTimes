@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="hintSearchQuery">Enter search query</string>
     <string name="search">Search</string>
-    <string name="title_activity_article">ArticleActivity</string>
+    <string name="title_activity_article">Article</string>
     <string name="filters">Filters</string>
     <string name="fashion_style"><![CDATA[Fashion & Style]]></string>
     <string name="arts">Arts</string>

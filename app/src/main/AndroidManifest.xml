@@ -26,6 +26,7 @@
             android:label="@string/title_activity_article"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <meta-data android:name="org.agoenka.nytimes.helpers.GlideConfiguration" android:value="GlideModule"/>
     </application>
 
 </manifest>
