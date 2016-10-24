@@ -83,27 +83,21 @@ public class ItemClickSupport {
     }
 
     private View.OnClickListener getViewOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnItemClickListener != null) {
-                    RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
-                    mOnItemClickListener.onItemClicked(mRecyclerView, holder.getAdapterPosition(), v);
-                }
+        return v -> {
+            if (mOnItemClickListener != null) {
+                RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
+                mOnItemClickListener.onItemClicked(mRecyclerView, holder.getAdapterPosition(), v);
             }
         };
     }
 
     private View.OnLongClickListener getViewOnLongClickListener() {
-        return new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mOnItemLongClickListener != null) {
-                    RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
-                    return mOnItemLongClickListener.onItemLongClicked(mRecyclerView, holder.getAdapterPosition(), v);
-                }
-                return false;
+        return v -> {
+            if (mOnItemLongClickListener != null) {
+                RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
+                return mOnItemLongClickListener.onItemLongClicked(mRecyclerView, holder.getAdapterPosition(), v);
             }
+            return false;
         };
     }
 

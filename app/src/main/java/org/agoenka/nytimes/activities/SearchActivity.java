@@ -12,7 +12,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -89,18 +88,15 @@ public class SearchActivity extends AppCompatActivity {
 
         // register listener for grid on click
         ItemClickSupport.addTo(rvResults).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        // get the article to display
-                        Article article = articles.get(position);
-                        // create an intent to display the article
-                        Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
-                        // pass in that article into the intent
-                        intent.putExtra("article", Parcels.wrap(article));
-                        // launch the activity
-                        startActivity(intent);
-                    }
+                (recyclerView, position, v) -> {
+                    // get the article to display
+                    Article article = articles.get(position);
+                    // create an intent to display the article
+                    Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
+                    // pass in that article into the intent
+                    intent.putExtra("article", Parcels.wrap(article));
+                    // launch the activity
+                    startActivity(intent);
                 }
         );
     }
@@ -155,12 +151,7 @@ public class SearchActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_filter) {
             FilterSettingsFragment filterDialog = FilterSettingsFragment.newInstance("Filters", filter);
-            filterDialog.setFilterSettingsDialogListener(new FilterSettingsFragment.FilterSettingsDialogListener() {
-                @Override
-                public void onSave(Filter selectedFiler) {
-                    filter = selectedFiler;
-                }
-            });
+            filterDialog.setFilterSettingsDialogListener(selectedFiler -> filter = selectedFiler);
             FragmentManager fragmentManager = getSupportFragmentManager();
             filterDialog.show(fragmentManager, "Filter Settings");
             return true;
