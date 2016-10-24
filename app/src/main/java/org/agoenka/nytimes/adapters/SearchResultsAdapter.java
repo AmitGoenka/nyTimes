@@ -107,6 +107,14 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.getItemViewType() == STANDARD) {
+            Glide.clear(((StandardViewHolder) holder).binding.ivThumbnail);
+        }
+    }
+
     private void configureStandardViewHolder(StandardViewHolder holder, Article article) {
         // clear out recycled image from last time
         holder.binding.ivThumbnail.setImageResource(0);
@@ -115,6 +123,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<RecyclerView.View
         // remote download the image in the background
         Glide.with(getContext())
                 .load(article.getThumbnail())
+                .fitCenter()
                 .error(R.mipmap.ic_launcher)
                 .into(holder.binding.ivThumbnail);
     }
