@@ -1,8 +1,8 @@
 package org.agoenka.nytimes.network;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.agoenka.nytimes.models.Filter;
 import org.agoenka.nytimes.utils.AppUtils;
@@ -50,7 +50,7 @@ public class ArticleSearchAPIClient {
         return params;
     }
 
-    public void getArticles(String query, Filter filter, int page, JsonHttpResponseHandler handler) {
+    public void getArticles(String query, Filter filter, int page, TextHttpResponseHandler handler) {
         String url = API_BASE_URL;
         RequestParams params = getParams(query, filter, page);
         client.get(url, params, handler);

@@ -1,13 +1,8 @@
 package org.agoenka.nytimes.models;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Author: agoenka
@@ -15,12 +10,14 @@ import java.util.Random;
  * Version: ${VERSION}
  */
 
-@Parcel
+@Parcel(analyze = Article.class)
 public class Article {
 
     String webUrl;
     String headline;
     String thumbnail;
+
+    transient List<Multimedia> multimediaList;
 
     public String getWebUrl() {
         return webUrl;
@@ -36,34 +33,4 @@ public class Article {
 
     public Article() {}
 
-    private Article(JSONObject jsonObject) {
-        try {
-            this.webUrl = jsonObject.getString("web_url");
-            this.headline = jsonObject.getJSONObject("headline").getString("main");
-            JSONArray multimedia = jsonObject.getJSONArray("multimedia");
-            if (multimedia.length() > 0) {
-                int selectedImage = new Random().nextInt(multimedia.length());
-                JSONObject multimediaJson = multimedia.getJSONObject(selectedImage);
-                this.thumbnail = "http://www.nytimes.com/" + multimediaJson.getString("url");
-            } else {
-                this.thumbnail = "";
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static List<Article> fromJSONArray(JSONArray array) {
-        List<Article> results = new ArrayList<>();
-
-        for (int i = 0; i < array.length(); i ++) {
-            try {
-                results.add(new Article(array.getJSONObject(i)));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return results;
-    }
 }

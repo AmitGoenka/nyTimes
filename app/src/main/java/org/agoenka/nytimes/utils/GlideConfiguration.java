@@ -1,4 +1,4 @@
-package org.agoenka.nytimes.helpers;
+package org.agoenka.nytimes.utils;
 
 import android.content.Context;
 

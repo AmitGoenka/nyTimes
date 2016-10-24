@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.adapters.SearchResultsAdapter;
@@ -24,10 +24,8 @@ import org.agoenka.nytimes.helpers.EndlessRecyclerViewScrollListener;
 import org.agoenka.nytimes.helpers.ItemClickSupport;
 import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.models.Filter;
+import org.agoenka.nytimes.models.ResponseWrapper;
 import org.agoenka.nytimes.network.ArticleSearchAPIClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -36,6 +34,7 @@ import java.util.List;
 import cz.msebera.android.httpclient.Header;
 
 import static org.agoenka.nytimes.network.NetworkUtils.isConnected;
+import static org.agoenka.nytimes.utils.GsonUtils.getGsonBuilder;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -162,26 +161,20 @@ public class SearchActivity extends AppCompatActivity {
 
     private void fetchArticles(int page) {
         if (isConnected(this)) {
-            new ArticleSearchAPIClient().getArticles(searchQuery, filter, page, new JsonHttpResponseHandler() {
+            new ArticleSearchAPIClient().getArticles(searchQuery, filter, page, new TextHttpResponseHandler() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    JSONArray articleJsonResults;
-                    try {
-                        articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                        int currentSize = adapter.getItemCount();
-                        articles.addAll(Article.fromJSONArray(articleJsonResults));
-                        adapter.notifyItemRangeInserted(currentSize, articles.size() - currentSize);
-                        Log.d("DEBUG", articles.toString());
-                    } catch (JSONException e) {
-                        Log.d("DEBUG", e.getMessage());
-                        Toast.makeText(SearchActivity.this, "Error occurred while parsing the search responses!", Toast.LENGTH_SHORT).show();
-                    }
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    int currentSize = adapter.getItemCount();
+                    List<Article> articleList = getGsonBuilder().create().fromJson(responseString, ResponseWrapper.class).getResponse().getDocs();
+                    articles.addAll(articleList);
+                    adapter.notifyItemRangeInserted(currentSize, articles.size() - currentSize);
+                    Log.d("DEBUG", articles.toString());
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject) {
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     Log.d("DEBUG", throwable.getMessage());
-                    Log.d("DEBUG", "StatusCode: " + statusCode + ", Error Message: " + jsonObject);
+                    Log.d("DEBUG", "StatusCode: " + statusCode + ", Error Message: " + responseString);
                     Toast.makeText(SearchActivity.this, "Error occurred while retrieving the articles.", Toast.LENGTH_SHORT).show();
                 }
             });
