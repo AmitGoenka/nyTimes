@@ -14,8 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.loopj.android.http.TextHttpResponseHandler;
-
 import org.agoenka.nytimes.R;
 import org.agoenka.nytimes.adapters.SearchResultsAdapter;
 import org.agoenka.nytimes.databinding.ActivitySearchBinding;
@@ -25,16 +23,17 @@ import org.agoenka.nytimes.helpers.ItemClickSupport;
 import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.models.Filter;
 import org.agoenka.nytimes.models.ResponseWrapper;
-import org.agoenka.nytimes.network.ArticleSearchAPIClient;
+import org.agoenka.nytimes.network.ArticleApiClient;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static org.agoenka.nytimes.network.NetworkUtils.isConnected;
-import static org.agoenka.nytimes.utils.GsonUtils.getGsonBuilder;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -161,21 +160,29 @@ public class SearchActivity extends AppCompatActivity {
 
     private void fetchArticles(int page) {
         if (isConnected(this)) {
-            new ArticleSearchAPIClient().getArticles(searchQuery, filter, page, new TextHttpResponseHandler() {
+            new ArticleApiClient().searchArticles(searchQuery, filter, page, new Callback<ResponseWrapper>() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                    int currentSize = adapter.getItemCount();
-                    List<Article> articleList = getGsonBuilder().create().fromJson(responseString, ResponseWrapper.class).getResponse().getDocs();
-                    articles.addAll(articleList);
-                    adapter.notifyItemRangeInserted(currentSize, articles.size() - currentSize);
-                    Log.d("DEBUG", articles.toString());
+                public void onResponse(Call<ResponseWrapper> call, Response<ResponseWrapper> response) {
+                    if (response.isSuccessful()) {
+                        int currentSize = adapter.getItemCount();
+                        articles.addAll(response.body().getResponse().getDocs());
+                        adapter.notifyItemRangeInserted(currentSize, articles.size() - currentSize);
+                        Log.d("DEBUG", articles.toString());
+                    } else {
+                        Log.d("DEBUG", response.errorBody().toString());
+                        Toast.makeText(SearchActivity.this, "Error occurred while retrieving articles!", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    Log.d("DEBUG", throwable.getMessage());
-                    Log.d("DEBUG", "StatusCode: " + statusCode + ", Error Message: " + responseString);
-                    Toast.makeText(SearchActivity.this, "Error occurred while retrieving the articles.", Toast.LENGTH_SHORT).show();
+                public void onFailure(Call<ResponseWrapper> call, Throwable t) {
+                    if (call.isCanceled()) {
+                        Toast.makeText(SearchActivity.this, "Request Cancelled!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d("DEBUG", t.getLocalizedMessage());
+                        Toast.makeText(SearchActivity.this, "Error occurred while retrieving articles.", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             });
         }
