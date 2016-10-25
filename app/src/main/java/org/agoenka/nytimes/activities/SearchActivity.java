@@ -163,7 +163,7 @@ public class SearchActivity extends AppCompatActivity {
                         Log.d("DEBUG", articles.toString());
                     } else {
                         Log.d("DEBUG", response.errorBody().toString());
-                        Toast.makeText(SearchActivity.this, "Error occurred while retrieving articles!", Toast.LENGTH_SHORT).show();
+                        fetchArticles(page); // Retrying
                     }
                 }
 
