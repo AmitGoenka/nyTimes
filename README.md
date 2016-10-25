@@ -43,12 +43,13 @@ The following **bonus** features are implemented:
 The following **additional** features are implemented:
 
 * [x] On re-selection of filters in the same session, transferring the user's previous filter selection from the articles search screen to the filter screen so that user does not have do it all over again!
+* [x] Some basic readily available animation (referred to the links from the custom tabs guide) on the custom tabs.
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![Video Walkthrough](assets/demo.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
