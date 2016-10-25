@@ -6,9 +6,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorControlNormal">@color/red700</item>
-        <item name="colorControlActivated">@color/orange500</item>
-        <item name="colorControlHighlight">@color/red500</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
+        <item name="colorControlActivated">@color/colorControlActivated</item>
+        <item name="colorControlHighlight">@color/colorControlHighlight</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
         <item name="android:checkboxStyle">@style/RobotoCheckboxStyle</item>
@@ -34,6 +34,12 @@
     </style>
 
     <style name="RobotoCheckboxStyle" parent="android:Widget.CompoundButton.CheckBox">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <!-- This configures the styles for the title within the Toolbar  -->
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textStyle">italic|bold</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
