@@ -1,8 +1,8 @@
-# Project 2 - *nyTimes*
+# Project 2 - *NYTimes*
 
-**nyTimes** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
+**NYTimes** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **7** hours spent in total
+Time spent: **25+** hours spent in total
 
 ## User Stories
 
@@ -60,10 +60,14 @@ Describe any challenges encountered while building the app.
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Glide](https://github.com/bumptech/glide) - Image loading library
+- [Retrofit](https://github.com/square/retrofit) - Http Client
+- [Gson](https://github.com/google/gson) - Java serialization/deserialization library
+- [Parceler](https://parceler.org/) - Android Parcelable code generator
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [yyyy] [Amit Goenka]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
