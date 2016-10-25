@@ -53,11 +53,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
         setSupportActionBar(binding.toolbar);
-
         configureRecyclerView();
-
-        searchQuery = "celebrities";
-        fetchArticles(0);
     }
 
     private void configureRecyclerView() {

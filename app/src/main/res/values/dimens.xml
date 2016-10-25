@@ -10,6 +10,6 @@
     <dimen name="datepicker_horizontal_margin">25dp</dimen>
     <dimen name="dialog_element_vertical_margin">40dp</dimen>
     <dimen name="dialog_checkbox_vertical_margin">20dp</dimen>
-    <dimen name="button_width">500dp</dimen>
+    <dimen name="button_width">450dp</dimen>
     <dimen name="button_height">35dp</dimen>
 </resources>
