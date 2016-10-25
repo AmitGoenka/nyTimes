@@ -36,7 +36,7 @@ public class ArticleApiClient {
         String sortOrder = null;
 
         if (filter != null) {
-            if (!AppUtils.isEmpty(filter.getNewsDesks())) {
+            if (AppUtils.isNotEmpty(filter.getNewsDesks())) {
                 newsDesks = filter.getNewsDesks(true);
             }
             if (filter.getBeginDate() != null) {

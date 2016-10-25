@@ -29,7 +29,7 @@ public class AppUtils {
         spinner.setSelection(index);
     }
 
-    public static boolean isEmpty(Collection<?> collection) {
-        return collection == null || collection.size() == 0;
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return collection != null && collection.size() != 0;
     }
 }

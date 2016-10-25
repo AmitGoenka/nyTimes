@@ -32,11 +32,11 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
 
     private FragmentFilterSettingsBinding binding;
 
-    Filter filter;
-    Calendar selectedCalendar;
+    private Filter filter;
+    private Calendar selectedCalendar;
 
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_FILTER = "filter";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_FILTER = "filter";
 
     public interface FilterSettingsDialogListener {
         void onSave(Filter filter);
@@ -87,7 +87,7 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
             if (!isEmpty(sortOrder)) {
                 setSpinnerToValue(binding.spnSortOrder, sortOrder);
             }
-            if (!AppUtils.isEmpty(newsDesks)) {
+            if (AppUtils.isNotEmpty(newsDesks)) {
                 Filter.setNewsDesks(getContext(), newsDesks, binding.cbArts, binding.cbFashionStyle, binding.cbSports);
             }
         }

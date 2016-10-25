@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
  */
 
 @SuppressWarnings("unused")
-public class PicassoUtils {
+class PicassoUtils {
 
     private PicassoUtils () {}
 

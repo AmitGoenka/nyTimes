@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.agoenka.nytimes.utils.AppUtils.isEmpty;
+import static org.agoenka.nytimes.utils.AppUtils.isNotEmpty;
 import static org.agoenka.nytimes.utils.DateUtils.FORMAT_MMDDYY;
 import static org.agoenka.nytimes.utils.DateUtils.formatDate;
 import static org.agoenka.nytimes.utils.DateUtils.getDate;
@@ -54,7 +54,7 @@ public class Filter {
     }
 
     public String getNewsDesks(boolean flattened) {
-        if (flattened && !isEmpty((newsDesks))) {
+        if (flattened && isNotEmpty((newsDesks))) {
             StringBuilder target = new StringBuilder();
             target.append("news_desk:(");
             for (String newsDesk : newsDesks) {
