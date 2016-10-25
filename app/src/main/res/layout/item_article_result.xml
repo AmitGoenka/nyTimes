@@ -27,8 +27,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="@color/pink900"
             android:text="@{article.headline}"
-            tools:text="TextView"/>
+            tools:text="Text View"/>
 
     </LinearLayout>
 

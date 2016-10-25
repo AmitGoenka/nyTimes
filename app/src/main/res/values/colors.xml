@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">@color/pink500</color>
+    <color name="colorPrimaryDark">@color/pink900</color>
+    <color name="colorAccent">@color/orange500</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="grey100">#F5F5F5</color>
+    <color name="indigo500">#3F51B5</color>
+    <color name="indigo700">#303F9F</color>
+    <color name="pink200">#FF4081</color>
+    <color name="pink500">#e91e63</color>
+    <color name="pink900">#880e4f</color>
+    <color name="red500">#f44336</color>
+    <color name="red700">#d32f2f</color>
+    <color name="orange500">#d32f2f</color>
+    <color name="purple700">#7B1FA2</color>
+    <color name="teal500">#009688</color>
+    <color name="yellow100">#FFF9C4</color>
 </resources>
