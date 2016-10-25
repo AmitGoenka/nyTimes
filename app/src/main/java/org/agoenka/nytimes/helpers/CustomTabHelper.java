@@ -26,7 +26,13 @@ public class CustomTabHelper {
         return new CustomTabsIntent.Builder() // Initialize the Custom Tabs Intent Builder
                 .setToolbarColor(ContextCompat.getColor(context, R.color.colorAccent)) // Customize with Toolbar color
                 .setActionButton(getShareIconBitmap(context), "Share Link", getPendingIntent(context, url), true) // Customize with Action Button
+                .addDefaultShareMenuItem()
+                .setShowTitle(true)
+                .enableUrlBarHiding()
+                .setStartAnimations(context, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .setExitAnimations(context, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .build();
+
     }
 
     private static Bitmap getShareIconBitmap(Context context) {
