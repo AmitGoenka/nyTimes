@@ -1,7 +1,7 @@
 package org.agoenka.nytimes.activities;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -24,7 +24,6 @@ import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.models.Filter;
 import org.agoenka.nytimes.models.ResponseWrapper;
 import org.agoenka.nytimes.network.ArticleApiClient;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static org.agoenka.nytimes.helpers.CustomTabHelper.getCustomsTabIntent;
 import static org.agoenka.nytimes.network.NetworkUtils.isConnected;
 
 public class SearchActivity extends AppCompatActivity {
@@ -89,12 +89,9 @@ public class SearchActivity extends AppCompatActivity {
                 (recyclerView, position, v) -> {
                     // get the article to display
                     Article article = articles.get(position);
-                    // create an intent to display the article
-                    Intent intent = new Intent(SearchActivity.this, ArticleActivity.class);
-                    // pass in that article into the intent
-                    intent.putExtra("article", Parcels.wrap(article));
-                    // launch the activity
-                    startActivity(intent);
+                    // fetch the url to load
+                    String url = article.getWebUrl();
+                    getCustomsTabIntent(this, url).launchUrl(this, Uri.parse(url));
                 }
         );
     }
