@@ -2,15 +2,11 @@ package org.agoenka.nytimes.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import org.agoenka.nytimes.BuildConfig;
 import org.agoenka.nytimes.models.Article;
 import org.agoenka.nytimes.models.ArticleDeserializer;
-import org.agoenka.nytimes.models.Multimedia;
-import org.agoenka.nytimes.models.MultimediaDeserializer;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -55,7 +51,6 @@ class ServiceGenerator {
 
     private static Gson getGson() {
         return new GsonBuilder()
-                .registerTypeAdapter(new TypeToken<List<Multimedia>>() {}.getType(), new MultimediaDeserializer())
                 .registerTypeAdapter(Article.class, new ArticleDeserializer())
                 .create();
     }
